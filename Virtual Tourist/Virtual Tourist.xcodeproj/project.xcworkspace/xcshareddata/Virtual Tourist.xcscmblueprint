@@ -1,0 +1,29 @@
+{
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "1B39B1AD8D7F5B00398D29589813EEA27D3F0B88" : 0,
+    "5E32233CC4B3D004BDE8903D03F6C0AFCAF27AFC" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "3455D4A1-FE06-47AE-8C72-F2FEC6518092",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "1B39B1AD8D7F5B00398D29589813EEA27D3F0B88" : "",
+    "5E32233CC4B3D004BDE8903D03F6C0AFCAF27AFC" : "..\/..\/Udacity\/persistence-step5.5\/ios-persistence-2.0"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Virtual Tourist",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Virtual Tourist.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/lupti-udacity\/VirtualTourist.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1B39B1AD8D7F5B00398D29589813EEA27D3F0B88"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/udacity\/ios-persistence-2.0",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "5E32233CC4B3D004BDE8903D03F6C0AFCAF27AFC"
+    }
+  ]
+}
