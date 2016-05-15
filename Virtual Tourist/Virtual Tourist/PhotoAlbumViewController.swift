@@ -19,9 +19,14 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     
     @IBAction func bottomButtonClicked () {
         if selectedIndexes.count == 0 {
-            
+            updateBottomButton()
+            getNewPhotoCollection()
         } else {
-            
+            deleteSelectedPhotos()
+            updateBottomButton()
+            dispatch_async(dispatch_get_main_queue()) {
+                CoreDataStackManager.sharedInstance().saveContext()
+            }
             
         }
     }
@@ -38,10 +43,50 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        print("PhotoAlbumView ViewDidLoad ans Pin is \(selectedPin)")
         setMapRegion(true)
+        
+        mapView.addAnnotation(selectedPin)
+        mapView.zoomEnabled = false
+        mapView.scrollEnabled = false
+        mapView.userInteractionEnabled = false
+        
+        fetchedResultsController.delegate = self
+        //var error: NSError?
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch let error as NSError {
+            print("Error: \(error.localizedDescription)")
+            showAlertView("The current Pin is invalid, Try a new Pin.")
+        }
+        
+        // Enable Bottom Button to Get new photos
+        if fetchedResultsController.fetchedObjects?.count == 0 {
+            emptyImageLabel.hidden = false
+            bottomButton.enabled = true
+        }
+        
+        print("End Photo Album Vide Did Load")
     }
     
+    override func viewWillAppear(animated: Bool) {
+        navigationItem.leftBarButtonItem?.title = "OK"
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        // Configure the collection view cell width and no space in between
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        layout.minimumLineSpacing = 5
+        layout.minimumInteritemSpacing = 5
+        
+        let width = floor((collectionView.frame.size.width - 20)/3)
+        layout.itemSize = CGSize(width: width, height: width)
+        collectionView.collectionViewLayout = layout
+    }
     
     // MARK: = Map Related Settings
     func setMapRegion(animated: Bool) {
@@ -69,7 +114,8 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     
     lazy var fetchedResultsController: NSFetchedResultsController = {
         let fetchedRequest = NSFetchRequest(entityName: "Photo")
-        fetchedRequest.sortDescriptors? = []
+        fetchedRequest.sortDescriptors = []
+        //fetchedRequest.sortDescriptors = [NSSortDescriptor(key: "latitude", ascending: true)]
         // Instantiate a predicate with the NSPredicate. Ticky: The Xcode might not guide you to use this default init function.
         fetchedRequest.predicate = NSPredicate(format: "pin == %@", self.selectedPin)
 

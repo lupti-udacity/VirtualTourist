@@ -31,7 +31,7 @@ extension FlickrDB {
         static let APIKey = "api_key"
         static let BoundingBox = "bbox"
         static let SafeSearch = "safe_search"
-        static let Extra = "extra"
+        static let Extras = "extras"
         static let Format = "format"
         static let NoJsonCallback = "nojsoncallback"
         static let PerPage = "per_page"

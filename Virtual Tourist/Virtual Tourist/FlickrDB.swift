@@ -20,7 +20,7 @@ class FlickrDB: NSObject {
         FlickrDB.Keys.Method: FlickrDB.Constants.Method,
         FlickrDB.Keys.APIKey: FlickrDB.Constants.APIKey,
         FlickrDB.Keys.SafeSearch: FlickrDB.Constants.SafeSearch,
-        FlickrDB.Keys.Extra: FlickrDB.Constants.Extras,
+        FlickrDB.Keys.Extras: FlickrDB.Constants.Extras,
         FlickrDB.Keys.Format: FlickrDB.Constants.Format,
         FlickrDB.Keys.NoJsonCallback: FlickrDB.Constants.NoJsonCallback,
         FlickrDB.Keys.PerPage: FlickrDB.Constants.PerPage,
@@ -179,6 +179,8 @@ class FlickrDB: NSObject {
                 if let totalPhotos = photosDictionary[FlickrDB.Keys.Total] as? String {
                     totalPhotoCount = (totalPhotos as NSString).integerValue
                 }
+                print("Total phot counts is \(totalPhotoCount)")
+                
                 if totalPhotoCount > 0 {
                     /* Retrieve multiple Photo records and store them in Array */
                     let photoArray = photosDictionary[FlickrDB.Keys.Photo] as? [[String : AnyObject]]
