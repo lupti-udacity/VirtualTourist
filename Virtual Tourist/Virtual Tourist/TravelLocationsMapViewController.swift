@@ -23,8 +23,7 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, NSF
     var editModeState: Bool = false  // default to false at the start of the view
     
     var droppedPin: Pin!             // Log press tap pin location
-    
-    
+ 
     // MARK: - Bind with Core Data
     
     // set Core Data sharedContext for this controller
@@ -103,16 +102,17 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, NSF
 
     // MARK: - Long Tap function
     func longTap(gestureRecognizer: UIGestureRecognizer) {
-        print("Start Long Tap Function Edit Mode is \(editModeState)")
+        print("Long Tap")
         // if edit state is false, can tap to drop pin
         if !self.editModeState {
-            print("Edit mode staate is false and gesture recognizer is \(gestureRecognizer.state)")
+
             // Set the coordinates of the drop point on the map
             let touchPoint = gestureRecognizer.locationInView(self.mapView)
             let newlySetCoordinate: CLLocationCoordinate2D = mapView.convertPoint(touchPoint, toCoordinateFromView: self.mapView)
             
             switch gestureRecognizer.state {
             case .Began:
+                print("Long Tap Began")
                 // Create a pin
                 var locationDictionary = [String : AnyObject]()
                 // Add current pin coordinate to the locationDictionary.
@@ -127,6 +127,7 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, NSF
                     })
                 
             case .Changed:
+                print("Long Tap Changed")
                 // Part of Key-Value Observing Programming (KVO) 
                 // Inform the receiver that the value of a givenproperty is about to change.
                 // CoreData NSManagedObject Class
@@ -136,29 +137,39 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, NSF
                 droppedPin.didChangeValueForKey("coordinate")
                 
             case .Ended:
+                print("Long Tap Ended")
                 // Fetch the location images by calling 
                 FlickrDB.sharedInstance().taskForSearchFlickrPhotos(self.droppedPin){(result, error) in
                     guard error == nil else {
                         // Error, e.g. the pin has no images or the internet connection is offline
                         print("Error: \(error?.localizedDescription)")
-                        self.showAlert(error?.localizedDescription)
+                        //delay the alert of no photo message to PhotoAlbumViewController
                         return
                     }
-                    print("Return from parseJSON OK with result photo array xx= \(result)")
+                    
+                    // Check if the result of photoArray is empty
+                    guard result?.count > 0 else {
+                        // The photo array is empty
+                        return
+                    }
+                    
                     // Positive return with data from Flickr Search Photos
                     // Parse the array of photos dictionaries
+                    // Only when there are new photos to be updated to the Core Data, otherwise, the Core Data will still hold
+                    // the last snapshot of the photos.
                     dispatch_async(dispatch_get_main_queue()) {
                         _ = result?.map() {(dictionary: [String : AnyObject]) -> Photo in
                             let photo = Photo(dictionary: dictionary, pin: self.droppedPin, context: self.sharedContext)
                             // Given the photo.iageUrl, grab the Flickr photo image for storing in the user's CoreData DB.
-                            FlickrDB.sharedInstance().taskForUpdatePhotoImageFileName(photo) { success, error in
-                                print("Task for Update Photo Image File Name \(photo)")
+                            FlickrDB.sharedInstance().taskForUpdatePhotoImageFileName(photo) { success, error
+                                in
                                 guard error == nil else {
                                     print("Error: \(error?.localizedDescription)")
                                     return
                                 }
+                                
                                 dispatch_async(dispatch_get_main_queue()) {
-                                    // Save the content to Core Data Photo database.
+                                    // Save the individual photo content to Core Data Photo database.
                                     CoreDataStackManager.sharedInstance().saveContext()
                                 }
                             }
@@ -193,12 +204,12 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, NSF
             "latitudeDelta" : mapView.region.span.latitudeDelta,
             "longitudeDelta" : mapView.region.span.longitudeDelta
         ]
-        print("Save Map Region File Path is \(filePath)")
+
         NSKeyedArchiver.archiveRootObject(dictionary, toFile: filePath)
     }
     
     func restoreMapRegion(animated: Bool) {
-        print("Restore Map Region File Path is \(filePath)")
+
         if let regionDictionary = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath) as? [String : AnyObject] {
             
             let longitude = regionDictionary["longitude"] as! CLLocationDegrees
@@ -246,7 +257,7 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, NSF
             let touchedPin = view.annotation as! Pin
             droppedPin = touchedPin
             mapView.deselectAnnotation(touchedPin, animated: false)
-            print("Dropped Pin selected in the mapView and ready to transit to PhotoAlbumView")
+
             performSegueWithIdentifier("showPhotos", sender: self)
             return
         }
@@ -293,16 +304,4 @@ class TravelLocationsMapViewController: UIViewController, MKMapViewDelegate, NSF
 
     }
     
-        // A generic Alert prompt.
-    func showAlert(errorMessage: String?) {
-        let alertController = UIAlertController(title: nil, message: errorMessage!, preferredStyle: .Alert)
-        let cancelAction = UIAlertAction(title: "Dismiss", style: .Cancel) { action -> Void in
-            // No additional action.
-        }
-        alertController.addAction(cancelAction)
-        self.presentViewController(alertController, animated: true) { () -> Void in
-            // no action
-        }
-    }
-        
 }

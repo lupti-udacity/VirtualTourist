@@ -38,7 +38,7 @@
                                 <rect key="frame" x="-1" y="548" width="595" height="51"/>
                                 <color key="backgroundColor" red="1" green="0.24461866830000001" blue="0.1296188201" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="uUx-im-R3j">
@@ -100,15 +100,6 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="ztz-pB-BNE"/>
                                 </items>
                             </toolbar>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Image Available" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DTW-CX-b2r">
-                                <rect key="frame" x="223" y="320" width="155" height="21"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="155" id="J3Q-xe-s9x"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="AZ1-VN-fXX">
                                 <rect key="frame" x="1" y="195" width="600" height="361"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="cfN-XJ-o66">
@@ -117,6 +108,13 @@
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
+                                <label key="backgroundView" hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="DTW-CX-b2r">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="361"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="NAP-eA-hkX" customClass="PhotoCell" customModule="Virtual_Tourist" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="168" height="151"/>
@@ -128,21 +126,25 @@
                                                 <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="1OI-Xh-4OT">
                                                     <rect key="frame" x="74" y="66" width="20" height="20"/>
                                                 </activityIndicatorView>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="H5c-B9-cqA">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="H5c-B9-cqA">
                                                     <rect key="frame" x="0.0" y="0.0" width="168" height="151"/>
                                                 </imageView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <constraints>
+                                            <constraint firstItem="H5c-B9-cqA" firstAttribute="centerX" secondItem="1OI-Xh-4OT" secondAttribute="centerX" id="1I3-gP-XSc"/>
                                             <constraint firstItem="1OI-Xh-4OT" firstAttribute="top" secondItem="NAP-eA-hkX" secondAttribute="topMargin" constant="70" id="66e-jc-iu9"/>
                                             <constraint firstItem="1OI-Xh-4OT" firstAttribute="leading" secondItem="NAP-eA-hkX" secondAttribute="leadingMargin" constant="70" id="7wn-eB-iAe"/>
+                                            <constraint firstItem="H5c-B9-cqA" firstAttribute="centerY" secondItem="1OI-Xh-4OT" secondAttribute="centerY" id="EK6-nv-aFh"/>
                                             <constraint firstItem="1OI-Xh-4OT" firstAttribute="centerY" secondItem="NAP-eA-hkX" secondAttribute="centerY" id="Gmc-tm-NXz"/>
                                             <constraint firstItem="1OI-Xh-4OT" firstAttribute="top" secondItem="NAP-eA-hkX" secondAttribute="topMargin" constant="70" id="Un5-ib-j4N"/>
                                             <constraint firstItem="1OI-Xh-4OT" firstAttribute="centerX" secondItem="NAP-eA-hkX" secondAttribute="centerX" id="XpZ-5A-g0V"/>
+                                            <constraint firstItem="H5c-B9-cqA" firstAttribute="leading" secondItem="NAP-eA-hkX" secondAttribute="leading" id="Zat-h3-FcP"/>
                                             <constraint firstItem="1OI-Xh-4OT" firstAttribute="top" secondItem="NAP-eA-hkX" secondAttribute="topMargin" constant="70" id="nu5-e7-djn"/>
                                             <constraint firstItem="1OI-Xh-4OT" firstAttribute="leading" secondItem="NAP-eA-hkX" secondAttribute="leadingMargin" constant="70" id="p2S-U7-lJv"/>
                                             <constraint firstItem="1OI-Xh-4OT" firstAttribute="leading" secondItem="NAP-eA-hkX" secondAttribute="leadingMargin" constant="70" id="rZa-uE-cCZ"/>
+                                            <constraint firstItem="H5c-B9-cqA" firstAttribute="top" secondItem="NAP-eA-hkX" secondAttribute="top" id="xXI-n4-2LF"/>
                                         </constraints>
                                         <variation key="default">
                                             <mask key="constraints">
@@ -170,7 +172,6 @@
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="vn0-Aw-TeH" secondAttribute="trailing" constant="-19" id="5lZ-Y0-ioq"/>
                             <constraint firstItem="AZ1-VN-fXX" firstAttribute="trailing" secondItem="5rR-eJ-Qlr" secondAttribute="trailing" id="73h-jP-SQg"/>
-                            <constraint firstItem="vn0-Aw-TeH" firstAttribute="centerX" secondItem="DTW-CX-b2r" secondAttribute="centerX" id="EL7-ou-hkz"/>
                             <constraint firstItem="5rR-eJ-Qlr" firstAttribute="top" secondItem="GM1-hT-FYI" secondAttribute="bottom" constant="1" id="HHm-jg-61w"/>
                             <constraint firstItem="AZ1-VN-fXX" firstAttribute="top" secondItem="GM1-hT-FYI" secondAttribute="bottom" constant="131" id="JU4-PX-Rp6"/>
                             <constraint firstItem="bhF-XZ-nl0" firstAttribute="top" secondItem="vn0-Aw-TeH" secondAttribute="bottom" constant="-6" id="NOt-kx-dZN"/>
@@ -178,8 +179,7 @@
                             <constraint firstItem="vn0-Aw-TeH" firstAttribute="leading" secondItem="zFK-K2-25L" secondAttribute="leadingMargin" constant="-21" id="Tbx-tS-RDr"/>
                             <constraint firstItem="5rR-eJ-Qlr" firstAttribute="leading" secondItem="zFK-K2-25L" secondAttribute="leadingMargin" constant="-19" id="Tfy-ic-sXE"/>
                             <constraint firstItem="AZ1-VN-fXX" firstAttribute="bottom" secondItem="vn0-Aw-TeH" secondAttribute="top" id="Zac-n5-8KM"/>
-                            <constraint firstAttribute="bottom" secondItem="DTW-CX-b2r" secondAttribute="bottom" constant="259" id="gsu-Is-WHg"/>
-                            <constraint firstItem="DTW-CX-b2r" firstAttribute="centerX" secondItem="5rR-eJ-Qlr" secondAttribute="centerX" id="jQq-BO-Qfe"/>
+                            <constraint firstAttribute="trailing" secondItem="vn0-Aw-TeH" secondAttribute="trailing" id="nVJ-85-VqK"/>
                             <constraint firstItem="AZ1-VN-fXX" firstAttribute="leading" secondItem="5rR-eJ-Qlr" secondAttribute="leading" id="pL5-VD-wdM"/>
                             <constraint firstItem="vn0-Aw-TeH" firstAttribute="leading" secondItem="zFK-K2-25L" secondAttribute="leading" id="vof-f7-S0j"/>
                             <constraint firstAttribute="trailingMargin" secondItem="5rR-eJ-Qlr" secondAttribute="trailing" constant="-21" id="x1f-g8-4ND"/>

@@ -46,6 +46,7 @@ class FlickrDB: NSObject {
         
         var mutableParameters = photosSearchParameters
         // Set the page number
+        
         mutableParameters[Keys.PageNumber] = pageNumber
         // Add pin in the parameters
         mutableParameters[Keys.Lon] = pin.coordinate.longitude
@@ -174,19 +175,35 @@ class FlickrDB: NSObject {
             print("Step 4 - parseJSONWithCompletionHandler is invoked")
             /* Retrieve a single record of Photos */
             if let photosDictionary = parsedResult.valueForKey(FlickrDB.Keys.Photos) as? [String : AnyObject] {
+                print("Response Photos: \(photosDictionary)")
                 // First check for the count of photos returned.
+
                 var totalPhotoCount = 0
-                if let totalPhotos = photosDictionary[FlickrDB.Keys.Total] as? String {
-                    totalPhotoCount = (totalPhotos as NSString).integerValue
-                }
-                print("Total phot counts is \(totalPhotoCount)")
+                var pageCount = 0
+                var currentPageNumber = 0
+                
+                totalPhotoCount = (photosDictionary[FlickrDB.Keys.Total]?.integerValue)!
+                pageCount = (photosDictionary[FlickrDB.Keys.Pages]?.integerValue)!
+                currentPageNumber = (photosDictionary[FlickrDB.Keys.PageNumber]?.integerValue)!
+                
+                print("From FlickrDB: The Total Photo Count is \(totalPhotoCount)")
+                print("From FlickrDB: The page count is \(pageCount)")
+                print("From FlickDB: The current page number is \(currentPageNumber)")
+                
                 
                 if totalPhotoCount > 0 {
                     /* Retrieve multiple Photo records and store them in Array */
                     let photoArray = photosDictionary[FlickrDB.Keys.Photo] as? [[String : AnyObject]]
-                    completionHandler(result: photoArray, error: nil)
+                    print("Total photo count stored in Core Data is \(photoArray?.count)")
+                    if photoArray?.count > 0 {
+                        completionHandler(result: photoArray, error: nil)
+                    } else {
+                        // The return page has empty photos even though it has no system error.
+                        completionHandler(result: nil, error: NSError(domain: "Flickr DB", code: 0, userInfo: [NSLocalizedDescriptionKey: "This pin has no more images."]))
+                    }
+                    
                 } else {
-                    completionHandler(result: nil, error: NSError(domain: "Flickr DB Error", code: 0, userInfo: [NSLocalizedDescriptionKey: "The Pin Location Has No Photos To Share"]))
+                    completionHandler(result: nil, error: NSError(domain: "Flickr DB Error", code: 0, userInfo: [NSLocalizedDescriptionKey: "This pin has no images."]))
                 }
             }
         }

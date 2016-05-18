@@ -43,7 +43,7 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("PhotoAlbumView ViewDidLoad ans Pin is \(selectedPin)")
+        print("PhotoAlbumView ViewDidLoad and Pin is \(selectedPin)")
         setMapRegion(true)
         
         mapView.addAnnotation(selectedPin)
@@ -52,28 +52,41 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
         mapView.userInteractionEnabled = false
         
         fetchedResultsController.delegate = self
-        //var error: NSError?
         
         do {
             try fetchedResultsController.performFetch()
         } catch let error as NSError {
+            
             print("Error: \(error.localizedDescription)")
-            showAlertView("The current Pin is invalid, Try a new Pin.")
+            self.emptyImageLabel.hidden = false
+            self.bottomButton.enabled = true
         }
         
         // Enable Bottom Button to Get new photos
-        if fetchedResultsController.fetchedObjects?.count == 0 {
-            emptyImageLabel.hidden = false
-            bottomButton.enabled = true
+        guard fetchedResultsController.fetchedObjects?.count > 0 else {
+            print("fetchedResults fetchedObjects count = 0")
+            print("Refetch from Flickr again for this pin")
+            print("Reset the page number to 0")
+            page = 0
+            getNewPhotoCollection()
+            return
         }
+        print("FetchedResults Objects Count = \(fetchedResultsController.fetchedObjects?.count)")
         
-        print("End Photo Album Vide Did Load")
+    
     }
     
     override func viewWillAppear(animated: Bool) {
-        navigationItem.leftBarButtonItem?.title = "OK"
+        super.viewWillAppear(animated)
+        print("View Will Appear ****")
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        print("View Did Appear")
+    }
+   
+    // Configure Collection Subview Layout
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -88,7 +101,7 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
         collectionView.collectionViewLayout = layout
     }
     
-    // MARK: = Map Related Settings
+    // MARK: = Map Related Settings for the MapView at the top of the View.
     func setMapRegion(animated: Bool) {
         let span = MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
         let savedRegion = MKCoordinateRegion(center: selectedPin.coordinate, span: span)
@@ -124,7 +137,7 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
         
     }()
     
-    // MARK: = Implement 4 NSFetchedResultsController delegates. Updating Collection View upon the fetched results.
+    // MARK: = Implement three NSFetchedResultsController delegates. Updating Collection View upon the fetched results.
     
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
         // Instantiate the index paths for insert, delete, and update
@@ -157,27 +170,29 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
         if controller.fetchedObjects?.count > 0 {
             emptyImageLabel.hidden = true
             bottomButton.enabled = true
+        } else {
+            emptyImageLabel.hidden = false
         }
         
         // Update to the collection view in batch.
         collectionView.performBatchUpdates( {() -> Void in
             
-        for indexPath in self.insertedIndexPaths {
+            for indexPath in self.insertedIndexPaths {
             self.collectionView.insertItemsAtIndexPaths([indexPath])
-        }
+            }
         
-        for indexPath in self.deletedIndexPaths {
+            for indexPath in self.deletedIndexPaths {
             self.collectionView.deleteItemsAtIndexPaths([indexPath])
-        }
+            }
         
-        for indexPath in self.updatedIndexPaths {
+            for indexPath in self.updatedIndexPaths {
             self.collectionView.reloadItemsAtIndexPaths([indexPath])
-        }
+            }
         }, completion: nil)
     }
     
     
-    // MARK: - Collection View
+    // MARK: - Five Collection View Delegates
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let sectionInfo = self.fetchedResultsController.sections![section]
@@ -259,10 +274,13 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
     
     func getNewPhotoCollection() {
         
-        // Turn off the bottom button
-        bottomButton.enabled = false
-        
         page += 1
+        print("Get New Photo Collection Page count is \(page)")
+        
+        dispatch_async(dispatch_get_main_queue()){
+            self.emptyImageLabel.hidden = true
+            self.bottomButton.enabled = true
+        }
         
         // delete exiting photos
         
@@ -273,55 +291,47 @@ class PhotoAlbumViewController: UIViewController, NSFetchedResultsControllerDele
         
         // Save the change in the shared context above.
         dispatch_async(dispatch_get_main_queue()) {
+            // Make sure the Empty Image Label is hidden for  non-empty photo album.
+            //self.emptyImageLabel.hidden = true
             CoreDataStackManager.sharedInstance().saveContext()
         }
         
         FlickrDB.sharedInstance().taskForSearchFlickrPhotos(selectedPin, pageNumber: page ) { result, error in
-            guard error == nil else {
+            
+            print("New Flickr photo count is \(result?.count)")
+            guard result?.count > 0 else {
                 print("Get New Photo Collection Error: \(error?.localizedDescription)")
-                self.showAlertView(error?.localizedDescription)
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.emptyImageLabel.text = error?.localizedDescription
+                    self.emptyImageLabel.hidden = false
+                    self.bottomButton.enabled = false
+                }
                 return
             }
-            
-            dispatch_async(dispatch_get_main_queue()) {
+            // There are new photos from Flickr
+                dispatch_async(dispatch_get_main_queue()) {
                 
                 // Loop through the result to get the photo imageFileName updated in the Photo Shared Context.
-                _ = result?.map() { (dictionary: [String : AnyObject]) -> Photo in
+                    _ = result?.map() { (dictionary: [String : AnyObject]) -> Photo in
                     
-                    let photo = Photo(dictionary: dictionary, pin: self.selectedPin, context: self.sharedContext)
+                        let photo = Photo(dictionary: dictionary, pin: self.selectedPin, context: self.sharedContext)
                     
-                    FlickrDB.sharedInstance().taskForUpdatePhotoImageFileName(photo) { success, error in
-                        guard error == nil else {
-                            print("Update Image File Error: \(error?.localizedDescription)")
-                            self.bottomButton.enabled = true
-                            return
-                        }
+                        FlickrDB.sharedInstance().taskForUpdatePhotoImageFileName(photo) { success, error in
+                            guard error == nil else {
+                                print("Update Image File Error: \(error?.localizedDescription)")
+                                return
+                            }
                         
-                        dispatch_async(dispatch_get_main_queue(), {
-                            CoreDataStackManager.sharedInstance().saveContext()
-                            self.bottomButton.enabled = true
-                        })
+                            dispatch_async(dispatch_get_main_queue(), {
+                                CoreDataStackManager.sharedInstance().saveContext()
+                            })
+                        }
+                        return photo
                     }
-                    return photo
                 }
-            }
-        }
-        // Save the changes on the Photo shared context.
-        dispatch_async(dispatch_get_main_queue()) {
-            CoreDataStackManager.sharedInstance().saveContext()
-        }
+         }
     }
-    
-    func showAlertView(error: String?) {
-        
-        let alertController = UIAlertController(title: nil, message: error!, preferredStyle: .Alert)
-        let cancelAction = UIAlertAction(title: "Dismiss", style: .Cancel, handler: nil)
-        
-        alertController.addAction(cancelAction)
-        presentViewController(alertController, animated: true, completion: nil)
-        
-    }
-    
+
     func deleteSelectedPhotos() {
         
         var photosToBeDeleted = [Photo]()
