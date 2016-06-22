@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="HIN-TE-flY">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="HIN-TE-flY">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -35,7 +35,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap Pins to Delete" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O4C-XK-oJ9">
-                                <rect key="frame" x="-1" y="548" width="595" height="51"/>
+                                <rect key="frame" x="-1" y="578" width="595" height="21"/>
                                 <color key="backgroundColor" red="1" green="0.24461866830000001" blue="0.1296188201" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -52,7 +52,6 @@
                             <constraint firstAttribute="trailingMargin" secondItem="O4C-XK-oJ9" secondAttribute="trailing" constant="-14" id="KAd-SO-Obz"/>
                             <constraint firstItem="O4C-XK-oJ9" firstAttribute="leading" secondItem="aqj-lD-tiW" secondAttribute="leadingMargin" constant="-21" id="aOe-iv-SK3"/>
                             <constraint firstAttribute="trailing" secondItem="uUx-im-R3j" secondAttribute="trailing" id="bf9-TX-qst"/>
-                            <constraint firstItem="O4C-XK-oJ9" firstAttribute="top" secondItem="rh7-zp-BRG" secondAttribute="bottom" constant="484" id="nV2-ax-Iu0"/>
                             <constraint firstItem="uUx-im-R3j" firstAttribute="top" secondItem="rh7-zp-BRG" secondAttribute="bottom" id="pRj-fc-Krm"/>
                             <constraint firstItem="uUx-im-R3j" firstAttribute="leading" secondItem="aqj-lD-tiW" secondAttribute="leading" id="tdO-fe-hji"/>
                         </constraints>
@@ -61,9 +60,7 @@
                     <connections>
                         <outlet property="mapView" destination="uUx-im-R3j" id="LHM-R5-Zhd"/>
                         <outlet property="tapPinsLabel" destination="O4C-XK-oJ9" id="R3Q-7O-dTQ"/>
-                        <segue destination="C7D-iM-79g" kind="show" identifier="showPhotos" id="naL-00-1Ze">
-                            <nil key="action"/>
-                        </segue>
+                        <segue destination="C7D-iM-79g" kind="show" identifier="showPhotos" id="naL-00-1Ze"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QAV-3J-ERs" userLabel="First Responder" sceneMemberID="firstResponder"/>
